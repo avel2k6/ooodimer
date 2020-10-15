@@ -1,6 +1,7 @@
 import React from 'react';
-import axios from "axios";
-import {clientHost} from "../../../config";
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import { clientHost } from '../../../config';
 
 const config = {
     updateInterval: 60000,
@@ -8,10 +9,9 @@ const config = {
 
 export const pages = {
     // main: { name: 'Главная', type: 'main'},
-    biddings: {name: 'Миники', type: 'biddings'},
-    users: {name: 'Пользователи', type: 'users'},
+    biddings: { name: 'Миники', type: 'biddings' },
+    users: { name: 'Пользователи', type: 'users' },
 };
-
 
 export default class Navbar extends React.Component {
     constructor(props) {
@@ -20,21 +20,21 @@ export default class Navbar extends React.Component {
             biddingsCount: 0,
         };
 
-        setTimeout(() => {this.getBiddings()});
-        setInterval(() => {this.getBiddings()}, config.updateInterval);
+        setTimeout(() => { this.getBiddings(); });
+        setInterval(() => { this.getBiddings(); }, config.updateInterval);
     }
 
     getBiddings = () => {
         axios
-            .get(clientHost + '/biddings/')
+            .get(`${clientHost}/biddings/`)
             .then((response) => {
                 const biddings = response.data.filter((bidding) => !bidding.deleted);
                 this.setState({
                     biddingsCount: biddings.length,
-                })
+                });
             }).catch((error) => {
-            console.log(error);
-        });
+                console.log(error);
+            });
     };
 
     render() {
@@ -44,7 +44,7 @@ export default class Navbar extends React.Component {
                 <ul className="navbar-nav mr-auto">
                     {Object.keys(pages).map((page) => <li
                         key={page}
-                        className={page === this.props.currentPage ? "nav-item active" : "nav-item"}>
+                        className={page === this.props.currentPage ? 'nav-item active' : 'nav-item'}>
                         <a
                             className="nav-link"
                             href={'#'}
@@ -58,3 +58,8 @@ export default class Navbar extends React.Component {
         </nav>;
     }
 }
+
+Navbar.propTypes = {
+    currentPage: PropTypes.string.isRequired,
+    handleChangePage: PropTypes.func.isRequired,
+};

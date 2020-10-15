@@ -1,12 +1,13 @@
-import React from "react";
-import Modal from "../modal";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Modal from '../modal';
 
-const getLocalStorageKey = (name, attrName='') => 'table-col-' + name + '-' + attrName;
+const getLocalStorageKey = (name, attrName = '') => `table-col-${name}-${attrName}`;
 
 export default class ColConfig extends React.Component {
     constructor(props) {
         super(props);
-        const name = this.props.name;
+        const { name } = this.props;
 
         this.state = {
             displayModal: false,
@@ -20,34 +21,34 @@ export default class ColConfig extends React.Component {
 
         this.setState({
             displayModal: !this.state.displayModal,
-        })
+        });
     };
 
     handleSetWidth = (e) => {
-        const name = this.props.name;
+        const { name } = this.props;
         const width = e.target.value;
         this.setState({ width });
         localStorage.setItem(getLocalStorageKey(name, 'width'), width);
     };
 
     handleSetTextAlign = (e) => {
-        const name = this.props.name;
+        const { name } = this.props;
         const textAlign = e.target.value;
         this.setState({ textAlign });
         localStorage.setItem(getLocalStorageKey(name, 'textAlign'), textAlign);
     };
 
-    render () {
+    render() {
         const modalBody = <>
             <div className="input-group mb-3">
                 <div className="input-group-prepend">
                     <span className="input-group-text" >Ширина</span>
                 </div>
                 <input type="text"
-                       className="form-control"
-                       placeholder="Ширина"
-                       value={ this.state.width ? this.state.width : ''}
-                       onChange={ this.handleSetWidth }
+                    className="form-control"
+                    placeholder="Ширина"
+                    value={ this.state.width ? this.state.width : ''}
+                    onChange={ this.handleSetWidth }
                 />
             </div>
             <div className="input-group mb-3">
@@ -55,10 +56,10 @@ export default class ColConfig extends React.Component {
                     <span className="input-group-text" >Положение</span>
                 </div>
                 <input type="text"
-                       className="form-control"
-                       placeholder="Положение"
-                       value={ this.state.textAlign ? this.state.textAlign : ''}
-                       onChange={ this.handleSetTextAlign }
+                    className="form-control"
+                    placeholder="Положение"
+                    value={ this.state.textAlign ? this.state.textAlign : ''}
+                    onChange={ this.handleSetTextAlign }
                 />
             </div>
         </>;
@@ -82,6 +83,10 @@ export default class ColConfig extends React.Component {
                 body = { modalBody }
                 footer = { null }
             />
-        </>
+        </>;
     }
+}
+
+ColConfig.propTypes = {
+    name: PropTypes.string.isRequired,
 };

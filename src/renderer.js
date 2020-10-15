@@ -33,8 +33,7 @@ import 'glyphicons-only-bootstrap/css/bootstrap.css';
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Layout from "./client/components/layout";
+import Layout from './client/components/layout';
 
 const baseNode = document.querySelector('#application');
 ReactDOM.render(<Layout/>, baseNode);
-

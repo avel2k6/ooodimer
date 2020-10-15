@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const modalSize = {
-    'default' : '',
-    'large': 'modal-lg',
-    'small': 'modal-sm',
+    default: '',
+    large: 'modal-lg',
+    small: 'modal-sm',
 };
 
 export default class Modal extends React.Component {
@@ -13,26 +14,24 @@ export default class Modal extends React.Component {
     }
 
     handleClickOverlay = (e) => {
-        if (!e.target.contains(this.modalRef.current) ) {
+        if (!e.target.contains(this.modalRef.current)) {
             return;
         }
         const { toggleModal } = this.props;
         toggleModal();
     };
 
-
     changeBodyClass = (display) => {
-        if (display ) {
+        if (display) {
             document.body.classList.add('modal-open');
             return;
         }
         document.body.classList.remove('modal-open');
     };
 
-
     handlePressEsc = (e) => {
-        const key = e.key;
-        if (key !== "Escape") {
+        const { key } = e;
+        if (key !== 'Escape') {
             return;
         }
         if (this.props.display) {
@@ -40,12 +39,10 @@ export default class Modal extends React.Component {
         }
     };
 
-
     componentWillUnmount() {
         document.body.classList.remove('modal-open');
         document.removeEventListener('keydown', this.handlePressEsc);
     }
-
 
     componentDidMount() {
         document.addEventListener('keydown', this.handlePressEsc);
@@ -53,7 +50,7 @@ export default class Modal extends React.Component {
 
     render() {
         const {
-            display, toggleModal, header, body, footer
+            display, toggleModal, header, body, footer,
         } = this.props;
         this.changeBodyClass(display);
 
@@ -76,7 +73,7 @@ export default class Modal extends React.Component {
 
                     <div
                         ref={this.modalRef}
-                        className={"modal-dialog modal-react " + modalSize[this.props.size]}
+                        className={`modal-dialog modal-react ${modalSize[this.props.size]}`}
                     >
                         <div className="modal-content">
                             { header
@@ -103,4 +100,22 @@ export default class Modal extends React.Component {
 
 Modal.defaultProps = {
     size: 'default',
+};
+
+Modal.propTypes = {
+    toggleModal: PropTypes.func.isRequired,
+    display: PropTypes.bool.isRequired,
+    header: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    body: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    footer: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    size: PropTypes.string,
 };

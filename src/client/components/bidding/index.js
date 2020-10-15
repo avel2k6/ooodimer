@@ -1,17 +1,14 @@
 import React from 'react';
-import moment from "moment";
-import axios from "axios";
-import { clientHost } from "../../../config";
-import format from "number-format.js";
-import BiddingType from "../biddingType";
+import moment from 'moment';
+import axios from 'axios';
+import format from 'number-format.js';
+import PropTypes from 'prop-types';
+import { clientHost } from '../../../config';
+import BiddingType from '../biddingType';
 
 const config = {
-  propsUpdateInteval: 120*1000,
+    propsUpdateInteval: 120 * 1000,
 };
-
-const types = [
-    {key: 1, value: 'Значение'},
-];
 
 export default class Bidding extends React.Component {
     constructor(props) {
@@ -25,15 +22,15 @@ export default class Bidding extends React.Component {
             datePayment: this.props.bidding.datePayment,
             deliveryPlace: this.props.bidding.deliveryPlace,
         };
-        setInterval(()=> {
+        setInterval(() => {
             this.updateOldProps();
-        }, config.propsUpdateInteval)
+        }, config.propsUpdateInteval);
     }
 
     /**
      * Принудительно обновляем стейт на свежие пропсы
      */
-    updateOldProps = () =>  {
+    updateOldProps = () => {
         this.setState({
             comment: this.props.bidding.comment,
             user: this.props.bidding.user,
@@ -41,37 +38,36 @@ export default class Bidding extends React.Component {
             dateDelivery: this.props.bidding.dateDelivery,
             datePayment: this.props.bidding.datePayment,
             deliveryPlace: this.props.bidding.deliveryPlace,
-        })
+        });
     };
 
     replaceCompanyName = (string) => {
         let str = string;
         str = str.toLowerCase();
         const replaceCollection = [
-            {target: 'муниципальное ', new: 'М'},
-            {target: 'бюджетное ', new: 'Б'},
-            {target: 'государственное ', new: 'Г'},
-            {target: 'общеобразовательное ', new: 'О'},
-            {target: 'образовательное ', new: 'О'},
-            {target: 'учреждение ', new: 'У '},
-            {target: 'казенное ', new: 'К'},
-            {target: 'автономное ', new: 'А'},
-            {target: 'профессиональное ', new: 'П'},
-            {target: 'дошкольное ', new: 'Д'},
+            { target: 'муниципальное ', new: 'М' },
+            { target: 'бюджетное ', new: 'Б' },
+            { target: 'государственное ', new: 'Г' },
+            { target: 'общеобразовательное ', new: 'О' },
+            { target: 'образовательное ', new: 'О' },
+            { target: 'учреждение ', new: 'У ' },
+            { target: 'казенное ', new: 'К' },
+            { target: 'автономное ', new: 'А' },
+            { target: 'профессиональное ', new: 'П' },
+            { target: 'дошкольное ', new: 'Д' },
         ];
         replaceCollection.forEach((rule) => {
             str = str.replace(rule.target, rule.new);
         });
-
 
         return str;
     };
 
     handleLikeBidding = (id, like) => (e) => {
         e.preventDefault();
-        const likeState = like ? false : true;
+        const likeState = !like;
         axios
-            .post(clientHost + '/biddings/' + id, {id: id, like: likeState})
+            .post(`${clientHost}/biddings/${id}`, { id, like: likeState })
             .then(() => {
                 this.props.getBiddings();
             });
@@ -79,76 +75,75 @@ export default class Bidding extends React.Component {
 
     handlePinBidding = (id, pin) => (e) => {
         e.preventDefault();
-        const pinState = pin ? false : true;
+        const pinState = !pin;
         axios
-            .post(clientHost + '/biddings/' + id, {id: id, pin: pinState})
+            .post(`${clientHost}/biddings/${id}`, { id, pin: pinState })
             .then(() => {
                 this.props.getBiddings();
             });
     };
 
     handleChangeCommentBidding = (id) => (e) => {
-        const value = e.target.value;
+        const { value } = e.target;
         this.setState({ comment: value });
         axios
-            .post(clientHost + '/biddings/' + id, {comment: value})
+            .post(`${clientHost}/biddings/${id}`, { comment: value });
     };
 
     handleChangeSelfPriceBidding = (id) => (e) => {
         const selfPrice = e.target.value * 1;
-        this.setState({ selfPrice: selfPrice });
+        this.setState({ selfPrice });
         axios
-            .post(clientHost + '/biddings/' + id, {selfPrice: selfPrice})
+            .post(`${clientHost}/biddings/${id}`, { selfPrice });
     };
 
     handleChangeDateDeliveryBidding = (id) => (e) => {
         const dateDelivery = e.target.value;
-        this.setState({ dateDelivery: dateDelivery });
+        this.setState({ dateDelivery });
         axios
-            .post(clientHost + '/biddings/' + id, {dateDelivery: dateDelivery})
+            .post(`${clientHost}/biddings/${id}`, { dateDelivery });
     };
-
 
     handleChangeDatePaymentBidding = (id) => (e) => {
         const datePayment = e.target.value;
-        this.setState({ datePayment: datePayment });
+        this.setState({ datePayment });
         axios
-            .post(clientHost + '/biddings/' + id, {datePayment: datePayment})
+            .post(`${clientHost}/biddings/${id}`, { datePayment });
     };
 
     handleChangeDeliveryPlaceBidding = (id) => (e) => {
         const deliveryPlace = e.target.value;
-        this.setState({ deliveryPlace: deliveryPlace });
+        this.setState({ deliveryPlace });
         axios
-            .post(clientHost + '/biddings/' + id, {deliveryPlace: deliveryPlace})
+            .post(`${clientHost}/biddings/${id}`, { deliveryPlace });
     };
 
-
     handleChangeUserBidding = (id) => (e) => {
-        const value = e.target.value;
+        const { value } = e.target;
         this.setState({ user: value });
         axios
-            .post(clientHost + '/biddings/' + id, {user: value})
+            .post(`${clientHost}/biddings/${id}`, { user: value });
     };
 
     handleChangeTypeBidding = (id, value) => {
         this.setState({ type: value });
         axios
-            .post(clientHost + '/biddings/' + id, {type: value})
+            .post(`${clientHost}/biddings/${id}`, { type: value });
     };
 
     handleDeleteBidding = (id) => (e) => {
+        if (e) e.preventDefault();
         axios
-            .post(clientHost + '/biddings/' + id, {deleted: true})
+            .post(`${clientHost}/biddings/${id}`, { deleted: true })
             .then(() => {
                 this.props.getBiddings();
             });
     };
 
     handleOpenLink = (link) => (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         axios
-            .post(clientHost + '/link/', {link})
+            .post(`${clientHost}/link/`, { link });
     };
 
     handleClickCustomer = (customer) => (e) => {
@@ -158,20 +153,20 @@ export default class Bidding extends React.Component {
     };
 
     getColor = () => {
-      if (this.props.users.length === 0) {
-          return null;
-      }
-      if (!this.state.user) {
-          return null;
-      }
-      const currentUser = this.props
+        if (this.props.users.length === 0) {
+            return null;
+        }
+        if (!this.state.user) {
+            return null;
+        }
+        const currentUser = this.props
             .users
             .find((user) => user.id === this.state.user);
-      return currentUser ? currentUser.color : null;
+        return currentUser ? currentUser.color : null;
     };
 
     render() {
-        const bidding = this.props.bidding;
+        const { bidding } = this.props;
         const rowStyle = {
             height: '30px',
             whiteSpace: 'nowrap',
@@ -185,8 +180,6 @@ export default class Bidding extends React.Component {
         const rowDateStyle = {
             width: '100%',
         };
-
-
 
         // const dateObj = moment(bidding.date);
         // const date = dateObj.format("d/M/Y HH:mm");
@@ -212,10 +205,10 @@ export default class Bidding extends React.Component {
                 </select>
             </td>
             <td title={bidding.name}>
-                <div style={{whiteSpace: 'normal' }}>{bidding.name}</div>
+                <div style={{ whiteSpace: 'normal' }}>{bidding.name}</div>
             </td>
             <td title={bidding.customer}>
-                <div style={{whiteSpace: 'normal' }}>
+                <div style={{ whiteSpace: 'normal' }}>
                     <a
                         href={'#'}
                         onClick={this.handleClickCustomer(bidding.customer)}>
@@ -236,9 +229,10 @@ export default class Bidding extends React.Component {
                 <a
                     href={'#'}
                     target={'_blank'}
+                    rel="noreferrer"
                     onClick={this.handleOpenLink(bidding.url)}
                 ><span
-                    className={'glyphicon glyphicon-link'}></span></a>
+                        className={'glyphicon glyphicon-link'}></span></a>
             </td>
             <td>
                 {dateStart}
@@ -249,7 +243,7 @@ export default class Bidding extends React.Component {
             <td style={{
                 ...colStyle,
             }}>
-                {format( "# ###.00", bidding.priceStart)}
+                {format('# ###.00', bidding.priceStart)}
             </td>
             <td>
                 <input
@@ -258,10 +252,10 @@ export default class Bidding extends React.Component {
                     onChange={this.handleChangeSelfPriceBidding(bidding.id)}/>
             </td>
             <td>
-                {format( "# ###." , this.state.selfPrice ? Math.floor(bidding.priceStart - this.state.selfPrice) : '')}
+                {format('# ###.', this.state.selfPrice ? Math.floor(bidding.priceStart - this.state.selfPrice) : '')}
             </td>
             <td>
-                {this.state.selfPrice ? Math.floor((bidding.priceStart - this.state.selfPrice) * 100/bidding.priceStart ) : ''}
+                {this.state.selfPrice ? Math.floor((bidding.priceStart - this.state.selfPrice) * (100 / bidding.priceStart)) : ''}
             </td>
             <td>
                 <input
@@ -284,7 +278,7 @@ export default class Bidding extends React.Component {
             </td>
             <td>
                 <textarea
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     value={this.state.comment}
                     onChange={this.handleChangeCommentBidding(bidding.id)}/>
             </td>
@@ -316,3 +310,31 @@ export default class Bidding extends React.Component {
         </tr>;
     }
 }
+
+Bidding.defaultProps = {
+    users: [],
+};
+
+Bidding.propTypes = {
+    users: PropTypes.array,
+    bidding: PropTypes.shape({
+        id: PropTypes.id,
+        name: PropTypes.string,
+        customer: PropTypes.string,
+        url: PropTypes.string,
+        type: PropTypes.array,
+        comment: PropTypes.string,
+        user: PropTypes.string,
+        selfPrice: PropTypes.number,
+        priceStart: PropTypes.number,
+        dateDelivery: PropTypes.string,
+        datePayment: PropTypes.string,
+        dateStart: PropTypes.number,
+        dateEnd: PropTypes.number,
+        deliveryPlace: PropTypes.string,
+        like: PropTypes.bool,
+        pin: PropTypes.bool,
+    }).isRequired,
+    getBiddings: PropTypes.func.isRequired,
+    handleFilterCustomer: PropTypes.func.isRequired,
+};

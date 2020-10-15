@@ -90,3 +90,6 @@ out/
 
 # Cached Data
 cache/
+
+# PhpStorm data
+.idea/

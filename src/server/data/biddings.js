@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { cachePath } from "../../config";
-import uniqid from  'uniqid';
+import { cachePath } from '../../config';
 
 const config = {
-    cacheFilename: path.resolve(cachePath ,'biddings.json'),
+    cacheFilename: path.resolve(cachePath, 'biddings.json'),
 };
 
 const messages = {
@@ -12,7 +11,9 @@ const messages = {
     cacheFolder: 'Cache folder created',
 };
 
+/* eslint-disable */
 export let dataBiddings = [];
+/* eslint-enable */
 
 export const addBidding = (data) => {
     if (!data.id) {
@@ -32,20 +33,18 @@ export const addBidding = (data) => {
 
     dataBiddings.push({
         updateTime: time,
-        ...data
+        ...data,
     });
 };
 
 export const getFilteredBiddings = () => {
     const filtered = dataBiddings
         .filter((bidding) => !bidding.deleted)
-        .sort((bidding1, bidding2) => {
-        return bidding1.dateEnd - bidding2.dateEnd;
-    });
+        .sort((bidding1, bidding2) => bidding1.dateEnd - bidding2.dateEnd);
     return filtered;
 };
 
-const maxTimeDelta = 1*12*60*60*1000;
+const maxTimeDelta = 1 * 12 * 60 * 60 * 1000;
 
 export const deleteOldBiddings = () => {
     const now = Date.now();
@@ -66,7 +65,6 @@ export const deleteOldBiddings = () => {
     });
 };
 
-
 // Если нет путей для кеша, создаем их вместе с болванкой файла
 if (!fs.existsSync(cachePath)) {
     fs.mkdirSync(cachePath, () => { console.log(messages.cacheFolder); });
@@ -77,6 +75,6 @@ if (!fs.existsSync(config.cacheFilename)) {
 }
 
 export const saveBiddings = () => fs.promises.writeFile(config.cacheFilename, JSON.stringify(dataBiddings), 'utf8');
-export const loadBiddings = () => fs.promises.readFile(config.cacheFilename).then((contents ) => {
+export const loadBiddings = () => fs.promises.readFile(config.cacheFilename).then((contents) => {
     dataBiddings = JSON.parse(contents); return true;
 });

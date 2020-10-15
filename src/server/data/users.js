@@ -1,12 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { cachePath } from "../../config";
-import uniqid from  'uniqid';
-
-
+import { cachePath } from '../../config';
 
 const config = {
-    cacheFilename: path.resolve(cachePath ,'users.json'),
+    cacheFilename: path.resolve(cachePath, 'users.json'),
 };
 
 const messages = {
@@ -14,7 +11,9 @@ const messages = {
     cacheFolder: 'Cache folder created',
 };
 
+/* eslint-disable */
 export let dataUsers = [];
+/* eslint-enable */
 
 export const addUser = (data) => {
     if (!data.id) {
@@ -34,7 +33,7 @@ export const addUser = (data) => {
 
     dataUsers.push({
         updateTime: time,
-        ...data
+        ...data,
     });
 };
 
@@ -51,5 +50,9 @@ if (!fs.existsSync(config.cacheFilename)) {
     fs.appendFileSync(config.cacheFilename, '[]');
 }
 
-export const saveUsers = () => fs.promises.writeFile(config.cacheFilename, JSON.stringify(dataUsers), 'utf8');
-export const loadUsers = () => fs.promises.readFile(config.cacheFilename).then((contents ) => { dataUsers = JSON.parse(contents); return true; });
+export const saveUsers = () => fs.promises
+    .writeFile(config.cacheFilename, JSON.stringify(dataUsers), 'utf8');
+
+export const loadUsers = () => fs.promises
+    .readFile(config.cacheFilename)
+    .then((contents) => { dataUsers = JSON.parse(contents); return true; });

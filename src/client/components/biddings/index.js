@@ -1,8 +1,8 @@
 import React from 'react';
-import axios from "axios";
-import { clientHost } from "../../../config";
+import axios from 'axios';
+import { clientHost } from '../../../config';
 import Bidding from '../bidding';
-import ColConfig from "../colConfig";
+import ColConfig from '../colConfig';
 import './index.styl';
 
 const config = {
@@ -30,7 +30,6 @@ export default class Biddings extends React.Component {
             this.getBiddings();
             this.getUsers();
         }, 60000);
-
     }
 
     componentWillUnmount() {
@@ -38,34 +37,32 @@ export default class Biddings extends React.Component {
         clearInterval(this.interval);
     }
 
-
     getBiddings = () => {
         axios
-            .get(clientHost + '/biddings/')
+            .get(`${clientHost}/biddings/`)
             .then((response) => {
                 this.setState({
                     biddings: response.data,
-                })
+                });
             }).catch((error) => {
-            console.log(error);
-        });
-    };
-
-    filterBiddings = (biddings) => {
-        return biddings
-            .filter((bidding) => {
-                if (this.state.filterName) {
-                    return (bidding.name.toLowerCase().includes(this.state.filterName.toLowerCase()));
-                }
-                return true;
-            })
-            .filter((bidding) => {
-                if (this.state.filterCustomer) {
-                    return (bidding.customer.toLowerCase().includes(this.state.filterCustomer.toLowerCase()));
-                }
-                return true;
+                console.log(error);
             });
     };
+
+    filterBiddings = (biddings) => biddings
+        .filter((bidding) => {
+            if (this.state.filterName) {
+                return (bidding.name.toLowerCase().includes(this.state.filterName.toLowerCase()));
+            }
+            return true;
+        })
+        .filter((bidding) => {
+            if (this.state.filterCustomer) {
+                return (bidding.customer.toLowerCase()
+                    .includes(this.state.filterCustomer.toLowerCase()));
+            }
+            return true;
+        });
 
     handleAddAllowedIndex = (e) => {
         e.preventDefault();
@@ -75,23 +72,23 @@ export default class Biddings extends React.Component {
 
     getUsers = () => {
         axios
-            .get(clientHost + '/users/')
+            .get(`${clientHost}/users/`)
             .then((response) => {
                 this.setState({
                     users: response.data,
-                })
+                });
             }).catch((error) => {
-            console.log(error);
-        });
+                console.log(error);
+            });
     };
 
     handleFilterName = (e) => {
-        const value = e.target.value;
+        const { value } = e.target;
         this.setState({ filterName: value });
     };
 
     handleFilterCustomer = (e) => {
-        const value = e.target.value;
+        const { value } = e.target;
         this.setState({ filterCustomer: value });
     };
 
@@ -107,7 +104,7 @@ export default class Biddings extends React.Component {
             .filter((bidding) => !bidding.pin));
 
         return <div>
-            <div style = { {overflowX: 'scroll', overflowY: 'hidden', maxWidth: '100%'} }>
+            <div style = { { overflowX: 'scroll', overflowY: 'hidden', maxWidth: '100%' } }>
                 <table className={'table table-striped table-sm table-hover biddings__table'} style={tableStyle}>
                     <tbody>
                         <tr className="font-weight-bold bg-info">
@@ -163,35 +160,29 @@ export default class Biddings extends React.Component {
                             <td></td>
                         </tr>
                         {pinnedBiddings.filter((bidding) => !bidding.deleted)
-                            .map((bidding) => {
-                                return (<Bidding
-                                    key={bidding.id}
-                                    bidding = { bidding }
-                                    users = { this.state.users }
-                                    getBiddings = {this.getBiddings}
-                                    handleFilterCustomer = {this.handleFilterCustomer}
-                                />);
-                        })}
+                            .map((bidding) => (<Bidding
+                                key={bidding.id}
+                                bidding = { bidding }
+                                users = { this.state.users }
+                                getBiddings = {this.getBiddings}
+                                handleFilterCustomer = {this.handleFilterCustomer}
+                            />))}
                         {otherBidding.filter((bidding) => !bidding.deleted)
-                            .map((bidding) => {
-                                return (<Bidding
-                                    key={bidding.id}
-                                    bidding = { bidding }
-                                    users = { this.state.users }
-                                    getBiddings = {this.getBiddings}
-                                    handleFilterCustomer = {this.handleFilterCustomer}
-                                />);
-                            })
-                            .filter((bidding, index) => {
-                                return index < this.state.allowedIndex;
-                            })}
+                            .map((bidding) => (<Bidding
+                                key={bidding.id}
+                                bidding = { bidding }
+                                users = { this.state.users }
+                                getBiddings = {this.getBiddings}
+                                handleFilterCustomer = {this.handleFilterCustomer}
+                            />))
+                            .filter((bidding, index) => index < this.state.allowedIndex)}
                     </tbody>
                 </table>
             </div>
 
             {(otherBidding.length > this.state.allowedIndex)
-                ? <div  className="d-flex p-4 justify-content-center"><button
-                    className={"btn btn-success"}
+                ? <div className="d-flex p-4 justify-content-center"><button
+                    className={'btn btn-success'}
                     onClick={this.handleAddAllowedIndex}
                 >Показать еще {config.allowedIndex}</button></div>
                 : null }
